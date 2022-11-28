@@ -1,0 +1,170 @@
+1. Enter the number of hours it took you to complete the project between
+   the <<< and >>> signs below (eg, <<<10>>>).
+
+   <<< 15 >>>
+   
+2. Enter the difficulty level (1: very easy; 5: very difficult) of the project
+   between the <<< and >>> signs below (eg, <<<3>>>).
+
+   <<< 4 >>>
+
+3. Provide a short description of how you approached each problem, issues you 
+   encountered, and how you resolved those issues.
+
+   Problem 1 (Particle Representation)
+      Approach: To create the data type Blob, I implement a python class that meets its API
+      specification. First, I compose the constructor to define and initialise the instance
+      variable for the particle blob : self._x(x coordinate of the centre of mass) , self._y (y
+      coordinate of the centre of mass)and self._pixels (number of pixels).
+
+      Second, I manipulate the instance variable to implement the desired functionality.
+      1)def add (self, x, y) -  As we know that the centre of mass is calculated as
+      follows (For each axis):(sum of (total no of pixel * x coordinate of centre of mass)) divided
+      by the total no of pixels (physics formula to calculate the centre of mass). Thus, Now to
+      update the to update the centre of mass, I add x( x coordinate of the pixel) in the numerator
+      and 1 in the denominator respectively (using simple math). Doing the same for y axis. Then
+      after successfully adding the pixel in the blob, I update the value of the self._pixel by 1.
+      2)def mass(self) - The mass of the particle blob is the number of pixels that in it. Thus I
+      simply return the sef._pixels.
+      3) def distanceTo(self, other) - To calculate the distance between the center of mass of this
+      blob and the center of mass of the other blob, I used the Euclidean distance formula. The
+      formula is ((x2-x1)**2 + (y2-y1)**2)**o.5. After calculating the Euclidean distance, I simply
+      return its value.
+      4) def __str__(self) - It is the string representation of the particle blob. It is
+      implemented by using the built in function str().
+
+      Issues and resolution: I was so confused in the add method, as I was not not able realize that
+       the number of pixel is the mass of the blob. Therefore, I was not able to come up with
+       something. However, it got clear to me with the help of Jack, as he explained me the a
+       little about pixels.
+
+   Problem 2 (Particle Identification)
+      Approach: To create a data type to identify blobs in a picture, I compose the constructor
+      first, to Constructs a blob finder to find blobs in the picture pic, using a luminance
+      threshold tau. I also initialised an empty list for the blobs in pic : self._blobs = []
+
+     Then, I created a 2D list of booleans called marked, having the same dimensions as pic to mark
+     those pixels as true which are not out of bounds, or if its luminance is less than tau.
+     Then, I started enumerating each pixel of the pic (using a for loop), to create a blob object
+     in each pixel, by calling the constructor. To find the desired blob out of all the blobs, I
+     called the method findBlob() with correct arguments. The method findBlob() identifies the
+     blob mainly through its threshold value. Thus, to find the blob accurately, I added a if
+     condition in the for loop, that is if the mass of the blob is greater than zero, then only
+     append the blob into the list self._blob[] created above.
+
+     Then I started coding for the method def _findBlob() : The method identifies a blob using
+     depth-first search by calling itself recursively in all the directions of the pixel. The
+     parameter take it take are : the picture (pic), luminance threshold (tau), pixel column (i),
+     pixel row (j), 2D boolean matrix (marked), and the blob being identified (blob).
+     As it is calling itself recursively in all the direction of the pixels to find Blob, I coded
+     for the base case which allows the function to accurately find the desired blob.
+     Base case: return if pixel (i, j) is out of bounds, or if it is marked, or if its luminance is
+     less than tau. Thus it dose not incorporate those pixels which are out of bound or if there
+     threshold is less than tau. I mark those pixel as True, which successfully exhausted the base
+     case and also adding those pixel in the blob by calling the add() method from blob.py module.
+
+     Then, I coded for the list of beads[](blobs with mass >= pixels). I first initialised a list
+     beads[]. Then using for loop, I run the loop for all the blobs in the self._blobs list[]. To
+     select the required blobs, I coded for a if condition. That is : if the mass of the blob is
+     greater than or equal to pixels, then count is as a bead and append it in the beads[] list.
+
+     Thus, this program successfully finds the required blob(beads) by constructing the blob object
+     in each pixel of the pic and then by finding the required blob (beads) out of them by checking
+     if the blob's mass is greater than zero, then by calling the findBlob() method and lastly by
+     segregating the blobs on the if condition, that is if their mass is greater than or equal to
+     zero. Thus provided the user with the list of beads.
+
+     Issues and resolution: In the starting, I did not incorporate the for loop in my coding.
+      for i in range(pic.width()):
+            for j in range(pic.height()):
+                blob = Blob()
+                self._findBlob(pic, tau, i, j, marked, blob)
+                if blob.mass() > 0:
+                self._blobs.append(blob)
+
+      Instead, i did it simply like as follows:
+      blob = Blob()
+      self._findBlob(pic, tau, i, j, marked, blob)
+                if blob.mass() > 0:
+                self._blobs.append(blob)
+      Because, I did not though first, that we would be creating the object for each pixel in the
+      pic. The issue was resolved with the help of Jack in his SI session.
+
+    Problem 3 (Particle Tracking)
+      Approach:In this program, we are computing the displacement of how far a bead moved from one
+      time step t to the next t+∆t. First, I accepted pixels, tau, and delta as command line
+      arguments. Then I am calling the constructor to accept the pic as command line
+      arguments. Note that it is not necessary to explicitly track a bead through
+      a sequence of frames (as been mentioned in th problem)— therefore we only have to identifying
+      the same bead in two consecutive frames.
+
+      For the frame sys.argv[4] (first frame), I am Calling the constructor BlobFinder to create a
+      new object called blobfinder to find blobs in the frame, using a luminance threshold tau.
+      Then, to get the list of all the blobs with mass greater than or equal to pixels , i.e. list
+      of all beads(prevBeads), I am Calling the method getBeads() on the blobfinder object.
+
+      Now, for each frame starting from sys.argv[5] ,I am Constructing the blobfinder object by
+      calling the constructor BlobFinder to find blobs in the frame, using a luminance threshold tau.
+      To get a list of all the beads (currBeads) , I am calling the getBeads() method.
+
+       By using the nested for loops, for each bead in the list of currBeads[] and prevBeads[], I am
+       calling the Calling the distanceTo() method to compute the distance between the beads from
+       the prevBead list and the currBead list. If the value of distance turn out to be less than
+       infinity and delta, then replacing the  the value of closest_distance from inf to the value
+       of distance computed above. In the end, Writing the value of closes_distance as standard
+       output if the value of closes_distance is not equal to the math.inf. Also setting the
+       prevBeads equal to CurrBeads as is is the same bead.
+
+      Issues and resolution: I found this program most difficult. I had a couple of issues in the
+      program. First, In line number 22 of my code (for i in range(5, len(sys.argv))) -- I did not
+      know what range to include.
+      Second, I was not using the nested loop, to calculate the distance between the prevBeads and
+      teh currBeads. Instead, I was just using the loop for the currBeads. Both the issues were
+      resolved with the help of jack, as he really helped me to understand the program.
+
+   Problem 4 (Data Analysis)
+      Approach: This program computes an estimate of Boltzmann’s constant and Avogadro’s constant
+      using the formula k(boltzmann constant) = 6 * math.pi * variance * ETA * RHO / T , where
+      variance is calculated as the sum of square on n displacements / (2* no of beads);
+      Avogadro_constant(Na) = R / Boltzmann_constant.
+
+      To calculate the constants, I first initialised all the constants : ETA(viscosity of water),
+      RHO (Radius of bead), T(temp), R(Gas Constant), var (variance) and n (no of beads).
+
+      1) To calculate the variance - I checked that if the input is not empty, i.e the displacement
+      of the beads is provided and is not empty. Then after reading the input from the standard
+      input (displacement of the particles computed in the bead_tracker), I convert it to meters
+      from pixels as the unites of all the quantities to calculate the constants are taken into
+      SI units. Finally, calculating the variance as the sum of square on n displacements / (2* no
+      of beads)
+
+      2) Boltzmann constant - Calculating the Boltzmann_constant (K)
+    Boltzmann_constant as = 6 * math.pi * var * ETA * RHO / T
+
+      3) Calculating the Avogadro_constant Avogadro_constant as = R / Boltzmann_constant
+
+      Finally writing the constants as the standard output - stdio.writef('%e %e\n',
+      Boltzmann_constant, Avogadro_constant)
+
+      Issues and resolution: I had no issues with this program.
+
+4. Did you receive help from anyone? List their names, status (classmate, 
+   CS110 grad, TA, other), and the nature of help received.
+
+   Name               Status                                Help Received
+   Jack         Problem 1, Problem 2 and Problem 3           SI session
+
+  Jack           Exercise Rectangle                        In starting I was coding as
+                                                           width * height and 2(width + height).
+                                                           It was giving me error. It was solved
+                                                           with the help of Jack, as he explained me
+                                                           about what the exercise have asked to do.
+
+
+
+5. List any other comments here. Feel free to provide any feedback on how
+   much you learned from doing the assignment, and whether you enjoyed
+   doing it.
+
+   This project seem very hard to me. However, I got a lot of practice on object oriented
+   programming. It was a great experience.
